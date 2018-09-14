@@ -1,0 +1,24 @@
+{
+    "name": "webconsol/php-data-models",
+    "version": "dev-master",
+    "description": "WEBCONSOL PHP Data Models",
+    "type": "library",
+    "keywords": ["data models"],
+    "homepage": "https://github.com/WEBCONSOL/php-data-models",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sothea Nim",
+            "email": "sothea.nim@webconsol.com",
+            "homepage": "https://www.webconsol.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-0" : {
+            "WC\\Models\\" : "src/"
+        }
+    }
+}
