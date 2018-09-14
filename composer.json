@@ -1,6 +1,6 @@
 {
     "name": "webconsol/php-data-models",
-    "version": "dev-master",
+    "version": "1.0.0",
     "description": "WEBCONSOL PHP Data Models",
     "type": "library",
     "keywords": ["data models"],
