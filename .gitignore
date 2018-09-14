@@ -2,3 +2,5 @@
 .idea
 *.iml
 *.log
+nbproject
+vendor
