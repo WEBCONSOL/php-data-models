@@ -2,7 +2,7 @@
 
 namespace WC\Models;
 
-class BaseModel
+class BaseModel implements \JsonSerializable
 {
     protected $requiredFields = array();
     protected $data = array();
@@ -37,4 +37,5 @@ class BaseModel
             }
         }
     }
+    public function jsonSerialize() {return $this->data;}
 }
