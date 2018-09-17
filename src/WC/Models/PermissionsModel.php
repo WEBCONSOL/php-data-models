@@ -16,30 +16,65 @@ final class PermissionsModel extends BaseModel
 
     public function canRead($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_READ, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_READ && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canModify($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_MODIFY, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_MODIFY && (int)$value === 1) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canCreate($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_CREATE, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_CREATE && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canDelete($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_DELETE, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_DELETE && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canReadACL($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_READ_ACL, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_READ_ACL && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canEditACL($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_EDIT_ACL, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_EDIT_ACL && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
     public function canReplicate($entity): bool {
         $data = $this->get($entity);
-        return is_array($data) && in_array(self::CAN_REPLICATE, $data);
+        foreach ($data as $key=>$value) {
+            if ($key === self::CAN_REPLICATE && $value > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }
