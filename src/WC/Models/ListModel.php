@@ -31,11 +31,7 @@ class ListModel implements \JsonSerializable, \Countable
         }
     }
 
-    public function merge(array $list) {
-        foreach ($list as $key=>$value) {
-            $this->data[$key] = $value;
-        }
-    }
+    public function merge(array $list) {foreach ($list as $key=>$value) {$this->data[$key] = $value;}}
 
     public function get($k=null, $defult=null) {
         if ($k !== null && isset($this->data[$k])) {
@@ -47,11 +43,7 @@ class ListModel implements \JsonSerializable, \Countable
         return $defult;
     }
 
-    public function set(string $k, $v) {
-        if ($k !== null) {
-            $this->data[$k] = $v;
-        }
-    }
+    public function set(string $k, $v) {if ($k !== null) {$this->data[$k] = $v;}}
 
     public function remove() {
         $argc = func_get_args();
@@ -64,48 +56,23 @@ class ListModel implements \JsonSerializable, \Countable
         }
     }
 
-    public function has($k): bool {
-        return $k !== null && isset($this->data[$k]);
-    }
+    public function has($k): bool {return $k !== null && isset($this->data[$k]);}
 
-    public function is($k, $v): bool {
-        return $k !== null && isset($this->data[$k]) && $this->data[$k] === $v;
-    }
+    public function is($k, $v): bool {return $k !== null && isset($this->data[$k]) && $this->data[$k] === $v;}
 
-    public function first() {
-        if (sizeof($this->data)) {
-            return array_values($this->data)[0];
-        }
-        return null;
-    }
+    public function first() {if (sizeof($this->data)) {return array_values($this->data)[0];}return null;}
 
-    public function last() {
-        if (sizeof($this->data)) {
-            $arr = array_values($this->data);
-            return end($arr);
-        }
-        return null;
-    }
+    public function last() {if (sizeof($this->data)) {$arr = array_values($this->data);return end($arr);}return null;}
 
-    public function jsonSerialize()
-    {
-        return $this->data;
-    }
+    public function jsonSerialize() {return $this->data;}
 
-    public function count(): int
-    {
-        return sizeof($this->data);
-    }
+    public function count(): int {return sizeof($this->data);}
 
-    public function hasElement(): bool {
-        return $this->count() > 0;
-    }
+    public function hasElement(): bool {return $this->count() > 0;}
 
-    public function isEmpty(): bool {
-        return !$this->hasElement();
-    }
+    public function isEmpty(): bool {return !$this->hasElement();}
 
-    public function getAsArray(): array {
-        return $this->data;
-    }
+    public function getAsArray(): array {return $this->data;}
+
+    public function __toString(): string {return json_encode($this->data);}
 }
