@@ -2,15 +2,14 @@
 
 namespace WC\Models;
 
+use WC\Utilities\ArrayUtil;
+
 class ListModel implements \JsonSerializable, \Countable
 {
     private $valueType = null;
     private $data = array();
 
-    function __construct($val)
-    {
-        $this->reset($val);
-    }
+    function __construct($val) {$this->reset($val);}
 
     public function reset($v=null) {
         if (is_array($v)) {
@@ -30,6 +29,8 @@ class ListModel implements \JsonSerializable, \Countable
             $this->valueType = 'string';
         }
     }
+
+    public function search(string $key) {return ArrayUtil::search($key, $this->data);}
 
     public function merge(array $list) {foreach ($list as $key=>$value) {$this->data[$key] = $value;}}
 
