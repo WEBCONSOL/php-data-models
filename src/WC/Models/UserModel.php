@@ -4,7 +4,7 @@ namespace WC\Models;
 
 final class UserModel extends BaseModel
 {
-    protected $requiredFields = array('id', 'username', 'email', 'created_by', 'last_modified_by', 'created_datetime', 'last_modified_datetime');
+    protected $requiredFields = array('id', 'username', 'email');
     public function getId() {return $this->get('id');}
     public function getUserName(): string {return $this->get('username', '');}
     public function getEmail(): string {return $this->get('email', '');}
