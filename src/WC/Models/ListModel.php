@@ -11,6 +11,19 @@ class ListModel implements \JsonSerializable, \Countable
 
     function __construct($val) {$this->reset($val);}
 
+    public function containsKey($key): bool {return $this->has($key);}
+
+    public function containsValue($value): bool {
+        foreach ($this->data as $val) {
+            if ($val === $value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function put(string $k, $v) {$this->set($k, $v);}
+
     public function reset($v=null) {
         if (is_array($v)) {
             $this->data = $v;
