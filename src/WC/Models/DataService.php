@@ -88,13 +88,13 @@ class DataService
     public function setUserId($id) {$this->userId = $id;}
 
     public function getData(string $tb, bool $isSingle=false) {
-        $sql = 'SELECT * FROM '.$tb;
+        $sql = 'SELECT * FROM '.$this->tablePrefix($tb);
         return $isSingle ? $this->fetchRow($sql) : $this->fetchRows($sql);
     }
 
     public function executeQuery(string $sql): bool {
         try {
-            $exec = $this->dbo->setQuery($sql)->execute();
+            $exec = $this->dbo->setQuery($this->tablePrefix($sql))->execute();
             if (!empty($exec) || (is_bool($exec) && $exec) || (is_resource($exec) && $exec)) {
                 return true;
             }
@@ -107,7 +107,7 @@ class DataService
 
     public function fetchRow(string $sql): array {
         try {
-            $row = $this->dbo->setQuery($sql)->loadAssoc();
+            $row = $this->dbo->setQuery($this->tablePrefix($sql))->loadAssoc();
             if (!empty($row)) {
                 $this->jsonDecode($row);
                 return $row;
@@ -121,7 +121,7 @@ class DataService
 
     public function fetchRows(string $sql): array {
         try {
-            $rows = $this->dbo->setQuery($sql)->loadAssocList();
+            $rows = $this->dbo->setQuery($this->tablePrefix($sql))->loadAssocList();
             if (!empty($rows)) {
                 $this->jsonDecode($rows);
                 return $rows;
@@ -135,7 +135,7 @@ class DataService
 
     public function getTableColumns(string $tb): array {
         try {
-            $rows = $this->fetchRows('DESCRIBE ' . $this->quoteName($tb));
+            $rows = $this->fetchRows('DESCRIBE ' . $this->quoteName($this->tablePrefix($tb)));
             if (!empty($rows)) {
                 $newRows = ['fields'=>[], 'primary'=>[]];
                 foreach ($rows as $i=>$row) {
@@ -155,7 +155,7 @@ class DataService
 
     public function getTablePrimaryKeys(string $tb): array {
         try {
-            $rows = $this->fetchRows('DESCRIBE ' . $this->quoteName($tb));
+            $rows = $this->fetchRows('DESCRIBE ' . $this->quoteName($this->tablePrefix($tb)));
             if (!empty($rows)) {
                 $newRows = array();
                 foreach ($rows as $i=>$row) {
@@ -216,7 +216,7 @@ class DataService
     }
 
     public function getCreateTableStatement(string $tb): string {
-        $query = 'SHOW CREATE TABLE '.$tb;
+        $query = 'SHOW CREATE TABLE '.$this->tablePrefix($tb);
         $rows = $this->fetchRows($query);
         if (!empty($rows) && isset($rows[0]) && isset($rows[0]['Create Table'])) {
             return $rows[0]['Create Table'];
@@ -283,7 +283,7 @@ class DataService
         }
 
         if ($sql !== null) {
-            if ($this->executeQuery($sql) && !$update) {
+            if ($this->executeQuery($this->tablePrefix($sql)) && !$update) {
                 if (method_exists($this->dbo, 'insertid')) {
                     return $this->dbo->insertid();
                 }
@@ -302,7 +302,7 @@ class DataService
             $cond[] = $this->quoteName($k).'='.$this->quote($v);
         }
         if (!empty($cond)) {
-            return $this->executeQuery('DELETE FROM '.$tb.' WHERE '.implode(' AND ', $cond));
+            return $this->executeQuery('DELETE FROM '.$this->tablePrefix($tb).' WHERE '.implode(' AND ', $cond));
         }
         return false;
     }
@@ -310,7 +310,7 @@ class DataService
     public function deleteTables(array $tb) {
         if (!empty($tb)) {
             $sql = 'DROP TABLE IF EXISTS '.implode(',', $tb);
-            return $this->executeQuery($sql);
+            return $this->executeQuery($this->tablePrefix($sql));
         }
         return false;
     }
