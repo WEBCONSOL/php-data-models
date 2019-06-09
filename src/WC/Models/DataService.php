@@ -13,6 +13,8 @@ class DataService
 
     public function __construct($dbo) {$this->dbo = $dbo;}
 
+    public function getDBPrefix(): string {return method_exists($this->dbo, 'getPrefix') ? $this->dbo->getPrefix() : '';}
+
     public static function copyTable(DataService $dbService1, DataService $dbService2, string $tb1, string $primaryKey, array $primaryKeyValues, string $tb2='') {
 
         $tb1 = $dbService1->tablePrefix($tb1);
