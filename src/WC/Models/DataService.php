@@ -137,7 +137,7 @@ class DataService
 
     public function getTableColumns(string $tb): array {
         try {
-            $rows = $this->fetchRows('DESCRIBE ' . $this->quoteName($this->tablePrefix($tb)));
+            $rows = $this->fetchRows('DESCRIBE ' . $this->tablePrefix($tb));
             if (!empty($rows)) {
                 $newRows = ['fields'=>[], 'primary'=>[]];
                 foreach ($rows as $i=>$row) {
@@ -283,7 +283,7 @@ class DataService
             }
             $sql = 'INSERT INTO '.$tb.'('.implode(',', $fields).') VALUES('.implode(',', $values).')';
         }
-
+        
         if ($sql !== null) {
             if ($this->executeQuery($this->tablePrefix($sql)) && !$update) {
                 if (method_exists($this->dbo, 'insertid')) {
