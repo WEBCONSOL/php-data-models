@@ -17,10 +17,11 @@ class DBCredentials implements \JsonSerializable
     public function __construct(array $config)
     {
         if (isset($config['driver'])) {$this->driver=$config['driver'];}
+        else if (isset($config['dbtype'])) {$this->driver=$config['dbtype'];}
+
         if (isset($config['host'])) {$this->host=$config['host'];}
 
         if (isset($config['port'])) {$this->port=$config['port'];}
-        else {$this->port = '3306';}
 
         if (isset($config['charset'])) {$this->charset=$config['charset'];}
         else {$this->charset = 'UTF-8';}
@@ -40,15 +41,22 @@ class DBCredentials implements \JsonSerializable
         else {$this->dbname = '';}
 
         if (isset($config['prefix'])) {$this->prefix=$config['prefix'];}
+        else if (isset($config['dbprefix'])) {$this->prefix=$config['dbprefix'];}
         else {$this->prefix = '';}
 
-        if ($this->driver && $this->host && $this->port) {
-            if ($this->driver === 'pdo_mysql') {$this->driver = 'mysql';}
-            $this->dsn=$this->driver.':host='.$this->host.';port='.$this->port.($this->dbname?';dbname='.$this->dbname:'');
+        if ($this->driver && $this->host) {
+            $this->fetchDriver();
+            $this->dsn=$this->driver.':host='.$this->host.($this->port?';port='.$this->port:'').($this->dbname?';dbname='.$this->dbname:'');
         }
     }
 
     public function isValid(): bool {return $this->dsn && $this->username && $this->password;}
+
+    private function fetchDriver() {
+        if ($this->driver === 'pdomysql' || $this->driver === 'pdo_mysql' || $this->driver === 'mysqli') {
+            $this->driver = 'mysql';
+        }
+    }
 
     public function jsonSerialize() {return $this;}
 

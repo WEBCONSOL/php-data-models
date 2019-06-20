@@ -4,7 +4,7 @@ namespace WC\Models;
 
 use WC\Utilities\Logger;
 
-class DBO
+class DBO implements \JsonSerializable
 {
     /**
      * @var \PDO $conn
@@ -24,9 +24,14 @@ class DBO
         $this->config = $config;
 
         if ($this->config->isValid()) {
-            $this->conn = new \PDO($config->dsn, $config->username, $config->password);
-            if ($this->conn->errorCode()) {
-                throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()));
+            try {
+                $this->conn = new \PDO($config->dsn, $config->username, $config->password);
+                if ($this->conn->errorCode()) {
+                    throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()));
+                }
+            }
+            catch (\Exception $e) {
+                Logger::error($e->getMessage());
             }
         }
         else {
@@ -72,6 +77,9 @@ class DBO
             $query = $this->query($this->stm->queryString);
             if ($query instanceof \PDOStatement) {
                 $result = $query->fetch(\PDO::FETCH_ASSOC);
+                if (!is_array($result)) {
+                    $result = [];
+                }
             }
             $this->stm = null;
         }
@@ -90,6 +98,9 @@ class DBO
             $query = $this->query($this->stm->queryString);
             if ($query instanceof \PDOStatement) {
                 $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+                if (!is_array($result)) {
+                    $result = [];
+                }
             }
             $this->stm = null;
         }
@@ -149,4 +160,8 @@ class DBO
         }
         return false;
     }
+
+    public function jsonSerialize() {return $this->config->jsonSerialize();}
+
+    public function __toString() {return json_encode($this->jsonSerialize());}
 }

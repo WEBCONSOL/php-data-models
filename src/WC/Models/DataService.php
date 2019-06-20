@@ -89,8 +89,12 @@ class DataService
 
     public function setUserId($id) {$this->userId = $id;}
 
-    public function getData(string $tb, bool $isSingle=false) {
-        $sql = 'SELECT * FROM '.$this->tablePrefix($tb);
+    public function getData(string $tb, array $options=[], bool $isSingle=false) {
+        $sql = 'SELECT * FROM '.$this->tablePrefix($tb).
+            (isset($options['condition'])&&$options['condition']?' WHERE '.$options['condition']:'').
+            (isset($options['order_by'])&&$options['order_by']?' ORDER BY '.$options['order_by']:'').
+            (isset($options['group_by'])&&$options['group_by']?' GROUP BY '.$options['group_by']:'').
+            (isset($options['limit'])&&$options['limit']?' LIMIT '.$options['limit']:'');
         return $isSingle ? $this->fetchRow($sql) : $this->fetchRows($sql);
     }
 
