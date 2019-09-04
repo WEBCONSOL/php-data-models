@@ -63,7 +63,7 @@ class ListModel implements \JsonSerializable, \Countable
         $argc = func_get_args();
         if ($argc != null && sizeof($argc)) {
             foreach ($argc as $k) {
-                if (isset($this->data[$k])) {
+                if (isset($this->data[$k]) || $this->data[$k] === null) {
                     unset($this->data[$k]);
                 }
             }
