@@ -31,7 +31,7 @@ class DBO implements \JsonSerializable
                 }
             }
             catch (\Exception $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         else {

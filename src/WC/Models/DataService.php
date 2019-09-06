@@ -106,7 +106,7 @@ class DataService
             }
         }
         catch (\RuntimeException $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return false;
     }
@@ -120,7 +120,7 @@ class DataService
             }
         }
         catch (\RuntimeException $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return [];
     }
@@ -134,7 +134,7 @@ class DataService
             }
         }
         catch (\RuntimeException $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return [];
     }
@@ -154,7 +154,7 @@ class DataService
             }
         }
         catch (\RuntimeException $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return [];
     }
@@ -173,7 +173,7 @@ class DataService
             }
         }
         catch (\RuntimeException $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return [];
     }
@@ -192,7 +192,7 @@ class DataService
             }
         }
         catch (\Exception $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return [];
     }
@@ -206,7 +206,7 @@ class DataService
             }
         }
         catch (\Exception $e) {
-            Logger::error($e->getMessage());
+            Logger::error($e);
         }
         return false;
     }

@@ -13,7 +13,7 @@ class JoomlaDBService
                 return $dbo->setQuery($query)->loadAssocList();
             }
             catch (\RuntimeException $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         return [];
@@ -25,7 +25,7 @@ class JoomlaDBService
                 return $dbo->setQuery($query)->loadAssoc();
             }
             catch (\RuntimeException $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         return [];
@@ -37,7 +37,7 @@ class JoomlaDBService
                 return $dbo->setQuery($query)->loadAssocList();
             }
             catch (\RuntimeException $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         return [];
@@ -51,7 +51,7 @@ class JoomlaDBService
                 return true;
             }
             catch (\RuntimeException $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         return false;
@@ -83,7 +83,7 @@ class JoomlaDBService
                 return $dbo->insertid();
             }
             catch (\RuntimeException $e) {
-                Logger::error($e->getMessage());
+                Logger::error($e);
             }
         }
         return 0;
