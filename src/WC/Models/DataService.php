@@ -139,10 +139,11 @@ class DataService
         return [];
     }
 
-    public function getTableColumns(string $tb): array {
+    public function getTableColumns(string $tb, bool $asIs=false): array {
         try {
             $rows = $this->fetchRows('DESCRIBE ' . $this->tablePrefix($tb));
             if (!empty($rows)) {
+                if ($asIs) {return $rows;}
                 $newRows = ['fields'=>[], 'primary'=>[]];
                 foreach ($rows as $i=>$row) {
                     $newRows['fields'][] = $row['Field'];
