@@ -45,7 +45,7 @@ class DBO implements \JsonSerializable
         if ($this->conn instanceof \PDO) {
             $this->stm = $this->conn->prepare($query);
             if (!empty($params)) {
-                foreach ($params as $K=>$v) {
+                foreach ($params as $k=>$v) {
                     if (!is_numeric($k) && strpos($query, ':'.$k) !== false) {
                         $this->stm->bindParam(':'.$k, $v);
                     }
@@ -65,7 +65,6 @@ class DBO implements \JsonSerializable
         else {
             throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
         }
-        return null;
     }
 
     public function loadAssoc(string $query=''): array {
