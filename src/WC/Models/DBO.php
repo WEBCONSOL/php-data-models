@@ -53,7 +53,7 @@ class DBO implements \JsonSerializable
             }
         }
         else {
-            throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.setQuery: conn is not an instance of PDO.');
         }
         return $this;
     }
@@ -63,7 +63,7 @@ class DBO implements \JsonSerializable
             return $this->conn->lastInsertId();
         }
         else {
-            throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.lastInsertId: conn is not an instance of PDO.');
         }
     }
 
@@ -83,7 +83,7 @@ class DBO implements \JsonSerializable
             $this->stm = null;
         }
         else {
-            throw new \RuntimeException(DBO::class.': stm is not instance of PDOStatement');
+            throw new \RuntimeException(DBO::class.'.loadAssoc: stm is not instance of PDOStatement');
         }
         return $result;
     }
@@ -104,7 +104,7 @@ class DBO implements \JsonSerializable
             $this->stm = null;
         }
         else {
-            throw new \RuntimeException(DBO::class.': stm is not instance of PDOStatement');
+            throw new \RuntimeException(DBO::class.'.loadAssocList: stm is not instance of PDOStatement');
         }
         return $result;
     }
@@ -133,9 +133,8 @@ class DBO implements \JsonSerializable
             return $this->conn->quote($str);
         }
         else {
-            throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.quote: conn is not an instance of PDO.');
         }
-        return $str;
     }
 
     public function quoteName(string $str): string {return '`'.$str.'`';}
@@ -145,9 +144,8 @@ class DBO implements \JsonSerializable
             return $this->conn->exec($stm);
         }
         else {
-            throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.');
         }
-        return null;
     }
 
     public function query(string $stm) {
@@ -155,9 +153,8 @@ class DBO implements \JsonSerializable
             return $this->conn->query($stm, \PDO::FETCH_ASSOC);
         }
         else {
-            throw new \RuntimeException(DBO::class.': conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.query: conn is not an instance of PDO.');
         }
-        return false;
     }
 
     public function jsonSerialize() {return $this->config->jsonSerialize();}
