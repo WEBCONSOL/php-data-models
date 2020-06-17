@@ -27,7 +27,7 @@ class DBO implements \JsonSerializable
             try {
                 $this->conn = new \PDO($config->dsn, $config->username, $config->password);
                 if ($this->conn->errorCode()) {
-                    throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()));
+                    throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()), 500);
                 }
             }
             catch (\Exception $e) {
@@ -35,7 +35,7 @@ class DBO implements \JsonSerializable
             }
         }
         else {
-            throw new \RuntimeException(DBO::class.': DBCredentials provided is invalid.');
+            throw new \RuntimeException(DBO::class.': DBCredentials provided is invalid.', 500);
         }
     }
 
@@ -53,7 +53,7 @@ class DBO implements \JsonSerializable
             }
         }
         else {
-            throw new \RuntimeException(DBO::class.'.setQuery: conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.setQuery: conn is not an instance of PDO.', 500);
         }
         return $this;
     }
@@ -63,7 +63,7 @@ class DBO implements \JsonSerializable
             return $this->conn->lastInsertId();
         }
         else {
-            throw new \RuntimeException(DBO::class.'.lastInsertId: conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.lastInsertId: conn is not an instance of PDO.', 500);
         }
     }
 
@@ -83,7 +83,7 @@ class DBO implements \JsonSerializable
             $this->stm = null;
         }
         else {
-            throw new \RuntimeException(DBO::class.'.loadAssoc: stm is not instance of PDOStatement');
+            throw new \RuntimeException(DBO::class.'.loadAssoc: stm is not instance of PDOStatement', 500);
         }
         return $result;
     }
@@ -104,7 +104,7 @@ class DBO implements \JsonSerializable
             $this->stm = null;
         }
         else {
-            throw new \RuntimeException(DBO::class.'.loadAssocList: stm is not instance of PDOStatement');
+            throw new \RuntimeException(DBO::class.'.loadAssocList: stm is not instance of PDOStatement', 500);
         }
         return $result;
     }
@@ -123,7 +123,7 @@ class DBO implements \JsonSerializable
             }
         }
         else {
-            throw new \RuntimeException(DBO::class.': stm is not instance of PDOStatement');
+            throw new \RuntimeException(DBO::class.': stm is not instance of PDOStatement', 500);
         }
         return false;
     }
@@ -133,7 +133,7 @@ class DBO implements \JsonSerializable
             return $this->conn->quote($str);
         }
         else {
-            throw new \RuntimeException(DBO::class.'.quote: conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.quote: conn is not an instance of PDO.', 500);
         }
     }
 
@@ -144,7 +144,7 @@ class DBO implements \JsonSerializable
             return $this->conn->exec($stm);
         }
         else {
-            throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.', 500);
         }
     }
 
@@ -153,7 +153,7 @@ class DBO implements \JsonSerializable
             return $this->conn->query($stm, \PDO::FETCH_ASSOC);
         }
         else {
-            throw new \RuntimeException(DBO::class.'.query: conn is not an instance of PDO.');
+            throw new \RuntimeException(DBO::class.'.query: conn is not an instance of PDO.', 500);
         }
     }
 
