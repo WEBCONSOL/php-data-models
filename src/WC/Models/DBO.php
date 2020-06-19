@@ -125,7 +125,6 @@ class DBO implements \JsonSerializable
         else {
             throw new \RuntimeException(DBO::class.': stm is not instance of PDOStatement', 500);
         }
-        return false;
     }
 
     public function quote(string $str): string {
@@ -141,7 +140,13 @@ class DBO implements \JsonSerializable
 
     public function exec(string $stm) {
         if ($this->conn instanceof \PDO) {
-            return $this->conn->exec($stm);
+            try {
+                $exec = $this->conn->prepare($stm)->execute();
+                return $exec;
+            }
+            catch (\PDOException $e) {
+                throw new \RuntimeException(DBO::class.'.exec: '.$e->getMessage(), 500);
+            }
         }
         else {
             throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.', 500);
