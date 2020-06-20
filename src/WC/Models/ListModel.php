@@ -47,14 +47,14 @@ class ListModel implements \JsonSerializable, \Countable
 
     public function merge(array $list) {foreach ($list as $key=>$value) {$this->data[$key] = $value;}}
 
-    public function get($k=null, $defult=null) {
+    public function get($k=null, $default=null) {
         if ($k !== null && isset($this->data[$k])) {
             return $this->data[$k];
         }
         else if ($k===null && $this->valueType === 'string') {
             return end($this->data);
         }
-        return $defult;
+        return $default;
     }
 
     public function set(string $k, $v) {if ($k !== null) {$this->data[$k] = $v;}}
