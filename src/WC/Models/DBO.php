@@ -141,8 +141,12 @@ class DBO implements \JsonSerializable
     public function exec(string $stm) {
         if ($this->conn instanceof \PDO) {
             try {
-                $exec = $this->conn->prepare($stm)->execute();
-                return $exec;
+                $this->conn->query($stm);
+                $errorCode = (int)($this->conn->errorCode()."");
+                if ($errorCode > 0) {
+                    $errorInfo = json_decode(json_encode($this->conn->errorInfo()), true);
+                    throw new \RuntimeException(DBO::class.'.exec: '.end($errorInfo), 500);
+                }
             }
             catch (\PDOException $e) {
                 throw new \RuntimeException(DBO::class.'.exec: '.$e->getMessage(), 500);
@@ -151,6 +155,7 @@ class DBO implements \JsonSerializable
         else {
             throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.', 500);
         }
+        return 1;
     }
 
     public function query(string $stm) {
