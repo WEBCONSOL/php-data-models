@@ -18,6 +18,10 @@ class DBO implements \JsonSerializable
      * @var \PDOStatement $stm
      */
     private $stm;
+    /**
+     * @var bool
+     */
+    private $isConnected = false;
 
     public function __construct(DBCredentials $config)
     {
@@ -29,6 +33,7 @@ class DBO implements \JsonSerializable
                 if ($this->conn->errorCode()) {
                     throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()), 500);
                 }
+                $this->isConnected = true;
             }
             catch (\Exception $e) {
                 Logger::error($e);
@@ -39,8 +44,17 @@ class DBO implements \JsonSerializable
         }
     }
 
+    /**
+     * @return string
+     */
     public function getPrefix(): string {return $this->conn ? $this->config->prefix : '';}
 
+    /**
+     * @param string $query
+     * @param array  $params
+     *
+     * @return DBO
+     */
     public function setQuery(string $query, array $params=[]): DBO {
         if ($this->conn instanceof \PDO) {
             $this->stm = $this->conn->prepare($query);
@@ -58,6 +72,9 @@ class DBO implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function lastInsertId() {
         if ($this->conn instanceof \PDO) {
             return $this->conn->lastInsertId();
@@ -67,6 +84,11 @@ class DBO implements \JsonSerializable
         }
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array
+     */
     public function loadAssoc(string $query=''): array {
         $result = [];
         if (!empty($query)) {
@@ -88,6 +110,11 @@ class DBO implements \JsonSerializable
         return $result;
     }
 
+    /**
+     * @param string $query
+     *
+     * @return array
+     */
     public function loadAssocList(string $query=''): array {
         $result = [];
         if (!empty($query)) {
@@ -109,6 +136,11 @@ class DBO implements \JsonSerializable
         return $result;
     }
 
+    /**
+     * @param array $input_params
+     *
+     * @return bool
+     */
     public function execute(array $input_params=[]): bool {
         if ($this->stm instanceof \PDOStatement) {
             if (!empty($input_params)) {
@@ -127,6 +159,11 @@ class DBO implements \JsonSerializable
         }
     }
 
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
     public function quote(string $str): string {
         if ($this->conn instanceof \PDO) {
             return $this->conn->quote($str);
@@ -136,9 +173,19 @@ class DBO implements \JsonSerializable
         }
     }
 
+    /**
+     * @param string $str
+     *
+     * @return string
+     */
     public function quoteName(string $str): string {return '`'.$str.'`';}
 
-    public function exec(string $stm) {
+    /**
+     * @param string $stm
+     *
+     * @return int
+     */
+    public function exec(string $stm): int {
         if ($this->conn instanceof \PDO) {
             try {
                 $this->conn->query($stm);
@@ -158,6 +205,11 @@ class DBO implements \JsonSerializable
         return 1;
     }
 
+    /**
+     * @param string $stm
+     *
+     * @return false|\PDOStatement
+     */
     public function query(string $stm) {
         if ($this->conn instanceof \PDO) {
             return $this->conn->query($stm, \PDO::FETCH_ASSOC);
@@ -165,6 +217,31 @@ class DBO implements \JsonSerializable
         else {
             throw new \RuntimeException(DBO::class.'.query: conn is not an instance of PDO.', 500);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConnected(): bool {return $this->isConnected;}
+
+    /**
+     * Close the db connection
+     */
+    public function closeConnection(): void {
+        $this->config = null;
+        $this->stm = null;
+        $this->conn = null;
+        $this->isConnected = false;
+    }
+
+    /**
+     * @param string $tableName
+     *
+     * @return TableColumns
+     */
+    public final function getTableColumns(string $tableName): TableColumns {
+        $query = 'DESCRIBE ' . $tableName;
+        return (new TableColumns($this->loadAssocList($query)));
     }
 
     public function jsonSerialize() {return $this->config->jsonSerialize();}
