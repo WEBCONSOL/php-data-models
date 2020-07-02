@@ -244,6 +244,18 @@ class DBO implements \JsonSerializable
         return (new TableColumns($this->loadAssocList($query)));
     }
 
+    /**
+     * @param string $dbName
+     *
+     * @return bool
+     */
+    public final function dbExists(string $dbName): bool {
+        $dbExistStm = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '".$dbName."'";
+        $row = null;
+        $row = $this->loadAssoc($dbExistStm);
+        return !empty($row) && is_array($row) && isset($row['SCHEMA_NAME']);
+    }
+
     public function jsonSerialize() {return $this->config->jsonSerialize();}
 
     public function __toString() {return json_encode($this->jsonSerialize());}
