@@ -33,12 +33,12 @@ class ListModel implements \JsonSerializable, \Countable
             $this->data = json_decode(json_encode($v), true);
             $this->valueType = 'object';
         }
-        else if (file_exists($v) && pathinfo($v, PATHINFO_EXTENSION)) {
+        else if (pathinfo($v, PATHINFO_EXTENSION) && file_exists($v)) {
             $this->data = json_decode(file_get_contents($v), true);
             $this->valueType = 'file';
         }
         else {
-            $this->data = array($this->data);
+            $this->data = array($v);
             $this->valueType = 'string';
         }
     }
