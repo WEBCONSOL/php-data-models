@@ -188,7 +188,7 @@ class DBO implements \JsonSerializable
     public function exec(string $stm): int {
         if ($this->conn instanceof \PDO) {
             try {
-                $this->conn->query($stm);
+                $exec = $this->conn->exec($stm);
                 $errorCode = (int)($this->conn->errorCode()."");
                 if ($errorCode > 0) {
                     $errorInfo = json_decode(json_encode($this->conn->errorInfo()), true);
@@ -198,11 +198,11 @@ class DBO implements \JsonSerializable
             catch (\PDOException $e) {
                 throw new \RuntimeException(DBO::class.'.exec: '.$e->getMessage(), 500);
             }
+            return $exec ? 1 : 0;
         }
         else {
             throw new \RuntimeException(DBO::class.'.exec: conn is not an instance of PDO.', 500);
         }
-        return 1;
     }
 
     /**
@@ -210,9 +210,15 @@ class DBO implements \JsonSerializable
      *
      * @return false|\PDOStatement
      */
-    public function query(string $stm) {
+    public function query(string $stm): bool {
         if ($this->conn instanceof \PDO) {
-            return $this->conn->query($stm, \PDO::FETCH_ASSOC);
+            $query = $this->conn->query($stm, \PDO::FETCH_ASSOC);
+            $errorCode = (int)($this->conn->errorCode()."");
+            if ($errorCode > 0) {
+                $errorInfo = json_decode(json_encode($this->conn->errorInfo()), true);
+                throw new \RuntimeException(DBO::class.'.exec: '.end($errorInfo), 500);
+            }
+            return is_bool($query) ? $query : true;
         }
         else {
             throw new \RuntimeException(DBO::class.'.query: conn is not an instance of PDO.', 500);
