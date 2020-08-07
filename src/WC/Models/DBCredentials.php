@@ -8,11 +8,13 @@ class DBCredentials implements \JsonSerializable
     public $driver;
     public $host;
     public $port;
-    public $charset;
+    public $charset = 'utf8';
     public $username;
     public $password;
     public $dbname;
     public $prefix;
+    public $collate = 'utf8_unicode_ci';
+    public $options = null;
 
     public function __construct(array $config)
     {
@@ -24,7 +26,8 @@ class DBCredentials implements \JsonSerializable
         if (isset($config['port'])) {$this->port=$config['port'];}
 
         if (isset($config['charset'])) {$this->charset=$config['charset'];}
-        else {$this->charset = 'UTF-8';}
+
+        if (isset($config['collate'])) {$this->charset=$config['collate'];}
 
         if (isset($config['user'])) {$this->username=$config['user'];}
         else if (isset($config['username'])) {$this->username=$config['username'];}
@@ -44,10 +47,9 @@ class DBCredentials implements \JsonSerializable
         else if (isset($config['dbprefix'])) {$this->prefix=$config['dbprefix'];}
         else {$this->prefix = '';}
 
-        if ($this->driver && $this->host) {
-            $this->fetchDriver();
-            $this->dsn=$this->driver.':host='.$this->host.($this->port?';port='.$this->port:'').($this->dbname?';dbname='.$this->dbname:'');
-        }
+        $this->setDSN();
+
+        $this->setOptions();
     }
 
     public function isValid(): bool {return $this->dsn && $this->username && $this->password;}
@@ -61,4 +63,29 @@ class DBCredentials implements \JsonSerializable
     public function jsonSerialize() {return $this;}
 
     public function __toString():string {return json_encode($this->jsonSerialize());}
+
+    private function setDSN(): void
+    {
+        if ($this->driver && $this->host) {
+            $this->fetchDriver();
+            $this->dsn=$this->driver.':host='.$this->host.
+                ($this->port?';port='.$this->port:'').
+                ($this->dbname?';dbname='.$this->dbname:'').
+                ($this->charset?';charset='.$this->charset:'');
+        }
+    }
+
+    private function setOptions(): void
+    {
+        if ($this->collate) {
+            if ($this->driver === 'mysql') {
+                $this->options = [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_PERSISTENT => false,
+                    \PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES ".$this->charset." COLLATE ".$this->collate
+                ];
+            }
+        }
+    }
 }

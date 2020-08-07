@@ -29,7 +29,12 @@ class DBO implements \JsonSerializable
 
         if ($this->config->isValid()) {
             try {
-                $this->conn = new \PDO($config->dsn, $config->username, $config->password);
+                $this->conn = new \PDO(
+                    $config->dsn,
+                    $config->username,
+                    $config->password,
+                    $config->options
+                );
                 if ($this->conn->errorCode()) {
                     throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()), 500);
                 }
