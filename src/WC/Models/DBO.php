@@ -36,7 +36,9 @@ class DBO implements \JsonSerializable
                     $config->options
                 );
                 if ($this->conn->errorCode()) {
-                    throw new \RuntimeException(DBO::class.': error - '.json_encode($this->conn->errorInfo()), 500);
+                    throw new \RuntimeException(DBO::class.': error - '.json_encode([
+                        'code'=>$this->conn->errorCode(), 'message'=>$this->conn->errorInfo()
+                        ]), 500);
                 }
                 $this->isConnected = true;
             }
@@ -251,7 +253,7 @@ class DBO implements \JsonSerializable
      * @return TableColumns
      */
     public final function getTableColumns(string $tableName): TableColumns {
-        $query = 'DESCRIBE ' . $tableName;
+        $query = 'DESCRIBE ' . $this->quoteName($tableName);
         return (new TableColumns($this->loadAssocList($query)));
     }
 
@@ -261,7 +263,7 @@ class DBO implements \JsonSerializable
      * @return bool
      */
     public final function dbExists(string $dbName): bool {
-        $dbExistStm = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '".$dbName."'";
+        $dbExistStm = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='.$this->quote($dbName);
         $row = null;
         $row = $this->loadAssoc($dbExistStm);
         return !empty($row) && is_array($row) && isset($row['SCHEMA_NAME']);
