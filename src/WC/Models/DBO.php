@@ -35,7 +35,7 @@ class DBO implements \JsonSerializable
                     $config->password,
                     $config->options
                 );
-                if ($this->conn->errorCode()) {
+                if ($this->conn->errorCode() !== '00000') {
                     throw new \RuntimeException(DBO::class.': error - '.json_encode([
                         'code'=>$this->conn->errorCode(), 'message'=>$this->conn->errorInfo(), 'debug_backtrace' => debug_backtrace()
                         ]), 500);
