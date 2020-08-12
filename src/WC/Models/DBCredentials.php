@@ -60,7 +60,21 @@ class DBCredentials implements \JsonSerializable
         }
     }
 
-    public function jsonSerialize() {return $this;}
+    public function jsonSerialize(): array {
+        return [
+            'dsn' => $this->dsn,
+            'driver' => $this->driver,
+            'host' => $this->host,
+            'port' => $this->port,
+            'charset' => $this->charset,
+            'username' => $this->username,
+            'password' => $this->password,
+            'dbname' => $this->dbname,
+            'prefix' => $this->prefix,
+            'collate' => $this->collate,
+            'options' => $this->options
+        ];
+    }
 
     public function __toString():string {return json_encode($this->jsonSerialize());}
 

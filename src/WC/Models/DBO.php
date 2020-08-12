@@ -269,7 +269,15 @@ class DBO implements \JsonSerializable
         return !empty($row) && is_array($row) && isset($row['SCHEMA_NAME']);
     }
 
-    public function jsonSerialize() {return $this->config->jsonSerialize();}
+    /**
+     * @return DBCredentials
+     */
+    public function getConfig() {return $this->config;}
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize(): array {return $this->config->jsonSerialize();}
 
     public function __toString() {return json_encode($this->jsonSerialize());}
 }
