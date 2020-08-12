@@ -37,7 +37,7 @@ class DBO implements \JsonSerializable
                 );
                 if ($this->conn->errorCode()) {
                     throw new \RuntimeException(DBO::class.': error - '.json_encode([
-                        'code'=>$this->conn->errorCode(), 'message'=>$this->conn->errorInfo()
+                        'code'=>$this->conn->errorCode(), 'message'=>$this->conn->errorInfo(), 'debug_backtrace' => debug_backtrace()
                         ]), 500);
                 }
                 $this->isConnected = true;
