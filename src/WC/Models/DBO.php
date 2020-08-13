@@ -40,10 +40,14 @@ class DBO implements \JsonSerializable
                         'code'=>$this->conn->errorCode(), 'message'=>$this->conn->errorInfo(), 'debug_backtrace' => debug_backtrace()
                         ]), 500);
                 }
+                else if (!($this->conn instanceof \PDO)) {
+                    throw new \RuntimeException('Failed to connect to DB', 500);
+                }
                 $this->isConnected = true;
             }
             catch (\Exception $e) {
                 Logger::error($e);
+                throw new \RuntimeException($e->getMessage(), 500);
             }
         }
         else {
